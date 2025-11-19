@@ -1,0 +1,1305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Powers of Ten – Year 9 • Mr. McLean Math</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    :root {
+      --bg: #f5f5f5;
+      --fg: #222;
+      --accent: #2b7cff;
+      --accent-soft: #e2ecff;
+      --error: #c62828;
+      --correct: #2e7d32;
+      --card: #ffffff;
+      --border: #dddddd;
+    }
+    body.high-contrast {
+      --bg: #000000;
+      --fg: #ffffff;
+      --accent: #ffff00;
+      --accent-soft: #333333;
+      --card: #111111;
+      --border: #777777;
+    }
+    * {
+      box-sizing: border-box;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--fg);
+      display: flex;
+      justify-content: center;
+    }
+    .app {
+      max-width: 1100px;
+      width: 100%;
+      padding: 16px;
+    }
+    h1 {
+      margin: 0 0 4px;
+      font-size: 1.6rem;
+    }
+    h2 {
+      margin-top: 0;
+    }
+    .subtitle {
+      font-size: 0.9rem;
+      color: #555;
+      margin-bottom: 16px;
+    }
+    body.high-contrast .subtitle {
+      color: #ccc;
+    }
+    .top-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 12px 14px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    }
+    .mode-select, .difficulty-select, .toggles {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+    }
+    .mode-btn, .difficulty-btn, .tab-btn, .worksheet-count-btn {
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      padding: 6px 12px;
+      background: #fff;
+      cursor: pointer;
+      font-size: 0.9rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+    body.high-contrast .mode-btn,
+    body.high-contrast .difficulty-btn,
+    body.high-contrast .tab-btn,
+    body.high-contrast .worksheet-count-btn {
+      background: #000;
+      color: #fff;
+    }
+    .mode-btn.active, .difficulty-btn.active, .tab-btn.active, .worksheet-count-btn.active {
+      border-color: var(--accent);
+      background: var(--accent-soft);
+      font-weight: 600;
+    }
+    .mode-btn span.small {
+      font-size: 0.75rem;
+      opacity: 0.8;
+    }
+    label {
+      font-size: 0.85rem;
+    }
+    .toggles label {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 0.85rem;
+    }
+    input[type="checkbox"], select {
+      cursor: pointer;
+    }
+    .timer-select {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+    select {
+      padding: 4px 6px;
+      border-radius: 6px;
+      border: 1px solid var(--border);
+      background: #fff;
+      font-size: 0.85rem;
+    }
+    body.high-contrast select {
+      background: #000;
+      color: #fff;
+    }
+    .main-layout {
+      display: grid;
+      grid-template-columns: minmax(0, 2fr) minmax(0, 1.1fr);
+      gap: 12px;
+      margin-top: 8px;
+    }
+    @media (max-width: 800px) {
+      .main-layout {
+        grid-template-columns: 1fr;
+      }
+    }
+    .problem-display {
+      min-height: 80px;
+      font-size: 1.4rem;
+      text-align: center;
+      padding: 16px 10px;
+      border-radius: 10px;
+      border: 1px dashed var(--border);
+      margin-bottom: 10px;
+    }
+    .prompt-label {
+      font-size: 0.9rem;
+      margin-bottom: 4px;
+    }
+    .input-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+    .input-row input[type="text"] {
+      flex: 1;
+      min-width: 120px;
+      padding: 8px 10px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      font-size: 1rem;
+    }
+    body.high-contrast .input-row input[type="text"] {
+      background: #000;
+      color: #fff;
+    }
+    button.action {
+      padding: 8px 14px;
+      border-radius: 999px;
+      border: none;
+      font-size: 0.9rem;
+      cursor: pointer;
+      background: var(--accent);
+      color: #fff;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+    button.secondary {
+      padding: 7px 12px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      background: #fff;
+      font-size: 0.85rem;
+      cursor: pointer;
+    }
+    body.high-contrast button.secondary {
+      background: #000;
+      color: #fff;
+    }
+    button:disabled {
+      opacity: 0.5;
+      cursor: default;
+    }
+    .feedback {
+      min-height: 40px;
+      font-size: 0.95rem;
+      margin-bottom: 4px;
+    }
+    .feedback.correct {
+      color: var(--correct);
+      font-weight: 600;
+    }
+    .feedback.incorrect {
+      color: var(--error);
+      font-weight: 600;
+    }
+    .steps {
+      font-size: 0.9rem;
+      line-height: 1.4;
+      margin-top: 4px;
+    }
+    .score-card table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.85rem;
+    }
+    .score-card td {
+      padding: 3px 0;
+    }
+    .score-card td.label {
+      color: #555;
+    }
+    body.high-contrast .score-card td.label {
+      color: #ccc;
+    }
+    .summary-list {
+      margin-top: 8px;
+      font-size: 0.8rem;
+      max-height: 200px;
+      overflow-y: auto;
+    }
+    .summary-item {
+      border-top: 1px solid var(--border);
+      padding: 4px 0;
+    }
+    .summary-item .q {
+      font-weight: 600;
+    }
+    .tabs {
+      display: flex;
+      gap: 6px;
+      margin-top: 4px;
+      margin-bottom: 6px;
+    }
+    .tab-btn {
+      font-size: 0.85rem;
+    }
+    .tab-panel {
+      display: none;
+    }
+    .tab-panel.active {
+      display: block;
+    }
+    .worksheet-controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 10px;
+      align-items: center;
+    }
+    .worksheet {
+      max-height: 420px;
+      overflow-y: auto;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      padding: 10px;
+      background: var(--card);
+      font-size: 0.9rem;
+    }
+    .worksheet p.instruction {
+      margin-top: 0;
+      margin-bottom: 8px;
+      font-weight: 600;
+    }
+    .worksheet-item {
+      margin-bottom: 12px;
+    }
+    .worksheet-answer {
+      font-style: italic;
+      display: none;
+      margin-top: 2px;
+    }
+    .footer {
+      margin-top: 16px;
+      font-size: 0.8rem;
+      text-align: center;
+      color: #777;
+    }
+    body.high-contrast .footer {
+      color: #aaa;
+    }
+    .pill {
+      display: inline-block;
+      padding: 1px 6px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      font-size: 0.7rem;
+      margin-left: 4px;
+    }
+    .timer-display {
+      font-size: 0.9rem;
+      margin-top: 4px;
+    }
+    .dev-panel {
+      margin-top: 12px;
+      font-size: 0.8rem;
+    }
+    .dev-panel summary {
+      cursor: pointer;
+    }
+    kbd {
+      padding: 2px 4px;
+      border-radius: 4px;
+      border: 1px solid var(--border);
+      font-size: 0.75rem;
+      background: #eee;
+    }
+    body.high-contrast kbd {
+      background: #333;
+    }
+
+    /* Proper horizontal fraction bar */
+    .frac {
+      display: inline-block;
+      text-align: center;
+      vertical-align: middle;
+      font-size: 0.9em;
+    }
+    .frac .num {
+      display: block;
+      padding: 0 2px;
+    }
+    .frac .den {
+      display: block;
+      border-top: 1px solid var(--fg);
+      padding: 0 2px;
+    }
+  </style>
+</head>
+<body>
+<div class="app" aria-live="polite">
+  <h1>Powers of Ten – Year 9</h1>
+  <div class="subtitle">
+    Practice with small numbers, powers of ten and exponents. Use <kbd>Enter</kbd> to submit and again to go to the next question (no auto-advance).
+  </div>
+
+  <div class="top-row">
+    <div class="card" style="flex:2">
+      <div><strong>Mode</strong></div>
+      <div class="mode-select" id="modeSelect">
+        <button class="mode-btn active" data-mode="calculate">Calculate<br><span class="small">(simplify expressions)</span></button>
+        <button class="mode-btn" data-mode="solve">Solve for x<br><span class="small">(exponent equations)</span></button>
+      </div>
+    </div>
+    <div class="card" style="flex:2">
+      <div><strong>Difficulty</strong></div>
+      <div class="difficulty-select" id="difficultySelect">
+        <button class="difficulty-btn active" data-diff="easy">🟢 Easy</button>
+        <button class="difficulty-btn" data-diff="medium">🟡 Medium</button>
+        <button class="difficulty-btn" data-diff="hard">🔴 Hard</button>
+        <button class="difficulty-btn" data-diff="random">🎲 Random</button>
+      </div>
+    </div>
+    <div class="card" style="flex:1.6">
+      <div><strong>Options</strong></div>
+      <div class="toggles">
+        <span class="timer-select">
+          <label>
+            <input type="checkbox" id="timerToggle">
+            Timer
+          </label>
+          <select id="timerDuration">
+            <option value="30">30 s</option>
+            <option value="60" selected>60 s</option>
+            <option value="90">90 s</option>
+            <option value="120">120 s</option>
+          </select>
+        </span>
+        <label>
+          <input type="checkbox" id="soundToggle" checked>
+          Sound
+        </label>
+        <label>
+          <input type="checkbox" id="contrastToggle">
+          High contrast
+        </label>
+      </div>
+      <div class="timer-display" id="timerDisplay" aria-live="polite"></div>
+    </div>
+  </div>
+
+  <div class="tabs">
+    <button class="tab-btn active" data-tab="gameTab">Game mode</button>
+    <button class="tab-btn" data-tab="worksheetTab">Worksheet mode</button>
+  </div>
+
+  <div id="gameTab" class="tab-panel active">
+    <div class="main-layout">
+      <div class="card" aria-label="Problem and answer area">
+        <div class="problem-display" id="problemDisplay">
+          Click "New question" to begin.
+        </div>
+        <div class="prompt-label" id="promptLabel"></div>
+        <div class="input-row">
+          <input type="text" id="answerInput" autocomplete="off" aria-label="Your answer">
+          <button class="action" id="submitBtn">Submit</button>
+          <button class="secondary" id="nextBtn" disabled>Next</button>
+          <button class="secondary" id="clearBtn">Clear</button>
+        </div>
+        <div class="feedback" id="feedback"></div>
+        <button class="secondary" id="stepsBtn" disabled>Show steps</button>
+        <div class="steps" id="steps"></div>
+        <div style="margin-top:8px;font-size:0.8rem;">
+          Tips: use <code>^</code> for exponents, e.g. <code>10^3</code>, and <code>*</code> for multiplication, e.g. <code>2*10^3</code>.
+          Decimals may use <code>,</code> or <code>.</code>.
+        </div>
+        <div style="margin-top:8px;">
+          <button class="secondary" id="newQuestionBtn">New question</button>
+        </div>
+      </div>
+
+      <div class="card score-card" aria-label="Score and summary">
+        <h2 style="font-size:1rem;margin-bottom:6px;">Session summary</h2>
+        <table>
+          <tr><td class="label">Questions:</td><td id="statTotal">0</td></tr>
+          <tr><td class="label">Correct:</td><td id="statCorrect">0</td></tr>
+          <tr><td class="label">Accuracy:</td><td id="statAccuracy">0%</td></tr>
+          <tr><td class="label">Score:</td><td id="statScore">0</td></tr>
+          <tr><td class="label">Streak:</td><td id="statStreak">0</td></tr>
+        </table>
+        <details style="margin-top:8px;">
+          <summary style="cursor:pointer;">Incorrect questions (collapsible)</summary>
+          <div class="summary-list" id="incorrectList"></div>
+        </details>
+        <div style="margin-top:10px;font-size:0.8rem;">
+          Keyboard: <kbd>Enter</kbd> = Submit / Next, <kbd>Esc</kbd> = Clear answer.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="worksheetTab" class="tab-panel">
+    <div class="card">
+      <h2 style="font-size:1rem;margin-bottom:8px;">Worksheet generator</h2>
+      <div class="worksheet-controls">
+        <div>
+          <strong>Mode:</strong>
+          <div class="mode-select" id="wsModeSelect">
+            <button class="mode-btn active" data-mode="calculate">Calculate</button>
+            <button class="mode-btn" data-mode="solve">Solve for x</button>
+          </div>
+        </div>
+        <div>
+          <strong>Difficulty:</strong>
+          <div class="difficulty-select" id="wsDifficultySelect">
+            <button class="difficulty-btn active" data-diff="easy">🟢</button>
+            <button class="difficulty-btn" data-diff="medium">🟡</button>
+            <button class="difficulty-btn" data-diff="hard">🔴</button>
+          </div>
+        </div>
+        <div>
+          <strong>Number of questions:</strong>
+          <div class="difficulty-select" id="wsCountSelect">
+            <button class="worksheet-count-btn active" data-count="5">5</button>
+            <button class="worksheet-count-btn" data-count="10">10</button>
+            <button class="worksheet-count-btn" data-count="15">15</button>
+          </div>
+        </div>
+        <div>
+          <button class="action" id="generateWorksheetBtn">Generate worksheet</button>
+        </div>
+      </div>
+      <div class="worksheet" id="worksheet">
+        <p class="instruction" id="worksheetInstruction">
+          Choose mode, difficulty and number of questions, then click "Generate worksheet".
+        </p>
+        <div id="worksheetItems"></div>
+      </div>
+      <div style="margin-top:8px; display:flex; gap:6px; flex-wrap:wrap;">
+        <button class="secondary" id="revealOneBtn" disabled>Reveal next answer</button>
+        <button class="secondary" id="revealAllBtn" disabled>Reveal all answers</button>
+        <button class="secondary" id="hideAllBtn" disabled>Hide all answers</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer">
+    Created by Mr. McLean Math.
+  </div>
+
+  <audio id="soundCorrect">
+    <source src="data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEAESsAACJWAAACABAAZGF0YQAAAAA=" type="audio/wav">
+  </audio>
+  <audio id="soundWrong">
+    <source src="data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEAESsAACJWAAACABAAZGF0YQAAAAA=" type="audio/wav">
+  </audio>
+
+  <div id="devPanelContainer"></div>
+</div>
+
+<script>
+(function() {
+  // --- State ---
+  let currentMode = 'calculate'; // 'calculate' or 'solve'
+  let currentDifficulty = 'easy'; // 'easy','medium','hard','random'
+  let currentProblem = null;
+  let hasAnsweredCurrent = false;
+  let timerId = null;
+  let timeLeft = 0;
+
+  const stats = {
+    total: 0,
+    correct: 0,
+    score: 0,
+    streak: 0
+  };
+  const incorrectLog = [];
+
+  const $ = (id) => document.getElementById(id);
+
+  function setText(id, text) {
+    $(id).textContent = text;
+  }
+
+  function formatAccuracy() {
+    if (stats.total === 0) return '0%';
+    return Math.round((stats.correct / stats.total) * 100) + '%';
+  }
+
+  function updateStatsDisplay() {
+    setText('statTotal', stats.total);
+    setText('statCorrect', stats.correct);
+    setText('statScore', stats.score);
+    setText('statStreak', stats.streak);
+    setText('statAccuracy', formatAccuracy());
+  }
+
+  function renderIncorrectList() {
+    const container = $('incorrectList');
+    container.innerHTML = '';
+    incorrectLog.forEach((item, idx) => {
+      const div = document.createElement('div');
+      div.className = 'summary-item';
+      div.innerHTML = `<div class="q">${idx+1}. ${item.question}</div>
+        <div>Your answer: ${item.yourAnswer}</div>
+        <div>Correct: ${item.correctAnswer}</div>`;
+      container.appendChild(div);
+    });
+  }
+
+  // --- Number formatting helpers ---
+  function normalizeDecimalInput(str) {
+    if (!str) return '';
+    str = str.trim();
+    return str.replace(/\s+/g,'').replace(',', '.');
+  }
+
+  function parseDecimal(str) {
+    const n = Number(normalizeDecimalInput(str));
+    return isNaN(n) ? null : n;
+  }
+
+  function addThousandsSpaces(intStr) {
+    return intStr.replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
+  }
+
+  function formatDecimal(n) {
+    const negative = n < 0;
+    n = Math.abs(n);
+
+    if (Number.isInteger(n)) {
+      const s = Math.trunc(n).toString();
+      const withSpaces = addThousandsSpaces(s);
+      return (negative ? '-' : '') + withSpaces;
+    } else {
+      let s = n.toFixed(8);
+      s = s.replace(/0+$/,'').replace(/\.$/,''); 
+      let [intPart, decPart] = s.split('.');
+      intPart = addThousandsSpaces(intPart);
+      return (negative ? '-' : '') + intPart + ',' + decPart;
+    }
+  }
+
+  function valueOfSci(mantissa, exponent) {
+    return mantissa * Math.pow(10, exponent);
+  }
+
+  function parseSciInput(str) {
+    if (!str) return null;
+    str = str.trim();
+    str = str.replace(/·/g,'*').replace(/x/gi,'*');
+    str = str.replace(',', '.');
+    const sciRegex = /^\s*([+-]?\d+(?:\.\d+)?)\s*\*\s*10\s*\^\s*([+-]?\d+)\s*$/;
+    const m = str.match(sciRegex);
+    if (!m) return null;
+    const a = Number(m[1]);
+    const n = parseInt(m[2],10);
+    if (!isFinite(a) || !isFinite(n)) return null;
+    return { mantissa: a, exponent: n };
+  }
+
+  function parsePowerInput(str) {
+    if (!str) return null;
+    str = str.trim();
+    str = str.replace(/\s+/g,'');
+    const m = str.match(/^([+-]?\d+)\^([+-]?\d+)$/);
+    if (!m) return null;
+    const base = parseInt(m[1],10);
+    const exp = parseInt(m[2],10);
+    if (!isFinite(base) || !isFinite(exp)) return null;
+    return { base, exponent: exp };
+  }
+
+  function approxEqual(a,b,eps=1e-9) {
+    return Math.abs(a-b) <= eps * (1 + Math.max(Math.abs(a),Math.abs(b)));
+  }
+
+  function randInt(min,max) {
+    return Math.floor(Math.random()*(max-min+1))+min;
+  }
+
+  function choice(arr) {
+    return arr[Math.floor(Math.random()*arr.length)];
+  }
+
+  // EASY CALCULATE
+  function makeEasyCalc_RemovePower() {
+    const a = randInt(1,9);
+    const n = choice([-4,-3,-2,-1,1,2,3,4]);
+    const value = a * Math.pow(10,n);
+    const question = `${a} * 10<sup>${n}</sup>`;
+    const display = formatDecimal(value);
+    const prompt = 'Write the number without powers of ten.';
+    const explanation = `Multiply ${a} by 10<sup>${n}</sup>. This moves the decimal point ${Math.abs(n)} place(s) ${n>0?'to the right':'to the left'}: ${a} * 10<sup>${n}</sup> = ${display}.`;
+    return {
+      html: question,
+      prompt,
+      answerObj: { type:'decimal', value },
+      displayAnswer: display,
+      explanation,
+      answerType: 'decimal'
+    };
+  }
+
+  function makeEasyCalc_ToPowerOfTen() {
+    const exps = [-6,-5,-4,-3,-2,-1,1,2,3,4,5,6];
+    const n = choice(exps);
+    const value = Math.pow(10, n);
+    const display = formatDecimal(value);
+    const question = display;
+    const prompt = 'Write the number as a power of ten.';
+    const explanation = `${question} = 10<sup>${n}</sup> because moving the decimal point ${Math.abs(n)} place(s) ${n>0?'to the right':'to the left'} gives 1.`;
+    return {
+      html: question,
+      prompt,
+      answerObj: { type:'power', base:10, exponent:n },
+      displayAnswer: `10<sup>${n}</sup>`,
+      explanation,
+      answerType: 'power'
+    };
+  }
+
+  function makeEasyCalc_SameBaseMultDiv() {
+    const baseChoices = [2,3,4,5,7,10];
+    const base = choice(baseChoices);
+    const e1 = randInt(-3,3);
+    const e2 = randInt(-3,3);
+    const type = Math.random()<0.5 ? 'mult' : 'div';
+    let html, explanation, resultExp;
+    if (type==='mult') {
+      resultExp = e1 + e2;
+      html = `${base}<sup>${e1}</sup> * ${base}<sup>${e2}</sup>`;
+      explanation = `When multiplying powers with the same base, add the exponents: ${base}<sup>${e1}</sup> * ${base}<sup>${e2}</sup> = ${base}<sup>${e1}+${e2}</sup> = ${base}<sup>${resultExp}</sup>.`;
+    } else {
+      resultExp = e1 - e2;
+      html = `<span class="frac"><span class="num">${base}<sup>${e1}</sup></span><span class="den">${base}<sup>${e2}</sup></span></span>`;
+      explanation = `When dividing powers with the same base, subtract exponents: ${base}<sup>${e1}</sup> / ${base}<sup>${e2}</sup> = ${base}<sup>${e1}-${e2}</sup> = ${base}<sup>${resultExp}</sup>.`;
+    }
+    return {
+      html,
+      prompt: 'Simplify the expression as a single power.',
+      answerObj: { type:'power', base, exponent: resultExp },
+      displayAnswer: `${base}<sup>${resultExp}</sup>`,
+      explanation,
+      answerType: 'power'
+    };
+  }
+
+  // EASY SOLVE
+  function makeEasySolve_Simple() {
+    const baseChoices = [2,3,4,5,7,10];
+    const base = choice(baseChoices);
+    const e1 = randInt(-3,4);
+    const e2 = randInt(-3,4);
+    const leftType = Math.random()<0.5 ? 'mult' : 'div';
+    let html, explanation, resultExp;
+    if (leftType==='mult') {
+      resultExp = e2;
+      html = `${base}<sup>x</sup> * ${base}<sup>${e1}</sup> = ${base}<sup>${resultExp}</sup>`;
+      const steps = `Combine powers on the left: ${base}<sup>x</sup> * ${base}<sup>${e1}</sup> = ${base}<sup>x+${e1}</sup>. Then x+${e1}=${resultExp}, so x=${resultExp}-${e1}=${resultExp-e1}.`;
+      return {
+        html,
+        prompt: 'Solve for x.',
+        answerObj: { type:'integer', value: resultExp - e1 },
+        displayAnswer: String(resultExp - e1),
+        explanation: steps,
+        answerType: 'integer'
+      };
+    } else {
+      resultExp = e2;
+      html = `<span class="frac"><span class="num">${base}<sup>x</sup></span><span class="den">${base}<sup>${e1}</sup></span></span> = ${base}<sup>${resultExp}</sup>`;
+      const steps = `On the left, subtract exponents: ${base}<sup>x</sup> / ${base}<sup>${e1}</sup> = ${base}<sup>x-${e1}</sup>. Then x-${e1}=${resultExp}, so x=${resultExp}+${e1}=${resultExp+e1}.`;
+      return {
+        html,
+        prompt: 'Solve for x.',
+        answerObj: { type:'integer', value: resultExp + e1 },
+        displayAnswer: String(resultExp + e1),
+        explanation: steps,
+        answerType: 'integer'
+      };
+    }
+  }
+
+  // MEDIUM CALCULATE
+  function makeMediumCalc_PosNeg() {
+    const base = choice([2,3,4,5,7,10]);
+    const e1 = randInt(-5,5);
+    const e2 = randInt(-5,5);
+    const type = Math.random()<0.5 ? 'mult' : 'div';
+    let html, resultExp, explanation;
+    if (type==='mult') {
+      resultExp = e1 + e2;
+      html = `${base}<sup>${e1}</sup> * ${base}<sup>${e2}</sup>`;
+      explanation = `Add the exponents: ${base}<sup>${e1}</sup> * ${base}<sup>${e2}</sup> = ${base}<sup>${e1}+${e2}</sup> = ${base}<sup>${resultExp}</sup>.`;
+    } else {
+      resultExp = e1 - e2;
+      html = `<span class="frac"><span class="num">${base}<sup>${e1}</sup></span><span class="den">${base}<sup>${e2}</sup></span></span>`;
+      explanation = `Subtract exponents: ${base}<sup>${e1}</sup> / ${base}<sup>${e2}</sup> = ${base}<sup>${e1}-${e2}</sup> = ${base}<sup>${resultExp}</sup>.`;
+    }
+    return {
+      html,
+      prompt: 'Simplify the expression as a single power.',
+      answerObj: { type:'power', base, exponent: resultExp },
+      displayAnswer: `${base}<sup>${resultExp}</sup>`,
+      explanation,
+      answerType: 'power'
+    };
+  }
+
+  function makeMediumCalc_FractionPowers() {
+    const base = choice([2,3,5,10]);
+    const e1 = randInt(-4, 2);
+    const e2 = randInt(-4, 2);
+    const html =
+      `<span class="frac"><span class="num">${base}<sup>${e1}</sup></span>` +
+      `<span class="den">${base}<sup>${e2}</sup></span></span>`;
+    const resultExp = e1 - e2;
+    const explanation = `You can think of the fraction as division of powers: ${base}<sup>${e1}</sup> / ${base}<sup>${e2}</sup> = ${base}<sup>${e1}-${e2}</sup> = ${base}<sup>${resultExp}</sup>.`;
+    return {
+      html,
+      prompt: 'Simplify the fraction as a single power.',
+      answerObj: { type:'power', base, exponent: resultExp },
+      displayAnswer: `${base}<sup>${resultExp}</sup>`,
+      explanation,
+      answerType: 'power'
+    };
+  }
+
+  // MEDIUM SOLVE
+  function makeMediumSolve_CompareExponents() {
+    const base = choice([2,3,5,7,10]);
+    const a = randInt(-6, 6);
+    const b = randInt(-6, 6);
+    const style = Math.random()<0.5 ? 'mult' : 'div';
+    let html, x, explanation;
+    if (style==='mult') {
+      x = b - a;
+      html = `${base}<sup>x</sup> * ${base}<sup>${a}</sup> = ${base}<sup>${b}</sup>`;
+      explanation = `Add exponents on the left: ${base}<sup>x</sup> * ${base}<sup>${a}</sup> = ${base}<sup>x+${a}</sup>. Then x+${a}=${b}, so x=${b}-${a}=${x}.`;
+      return {
+        html,
+        prompt: 'Solve for x.',
+        answerObj: { type:'integer', value: x },
+        displayAnswer: String(x),
+        explanation,
+        answerType: 'integer'
+      };
+    } else {
+      x = b + a;
+      html = `<span class="frac"><span class="num">${base}<sup>x</sup></span><span class="den">${base}<sup>${a}</sup></span></span> = ${base}<sup>${b}</sup>`;
+      explanation = `Subtract exponents on the left: ${base}<sup>x</sup> / ${base}<sup>${a}</sup> = ${base}<sup>x-${a}</sup>. Then x-${a}=${b}, so x=${b}+${a}=${x}.`;
+      return {
+        html,
+        prompt: 'Solve for x.',
+        answerObj: { type:'integer', value: x },
+        displayAnswer: String(x),
+        explanation,
+        answerType: 'integer'
+      };
+    }
+  }
+
+  // HARD CALCULATE
+  function makeHardCalc_Mixed() {
+    const base = choice([2,3,4,5,7,10]);
+    const a = randInt(-5,5);
+    const b = randInt(-5,5);
+    const c = randInt(-5,5);
+    const style = choice(['mult3','multDiv','div3']);
+    let html, resultExp, explanation;
+    if (style==='mult3') {
+      html = `${base}<sup>${a}</sup> * ${base}<sup>${b}</sup> * ${base}<sup>${c}</sup>`;
+      resultExp = a + b + c;
+      explanation = `Add all exponents: ${base}<sup>${a}</sup> * ${base}<sup>${b}</sup> * ${base}<sup>${c}</sup> = ${base}<sup>${a}+${b}+${c}</sup> = ${base}<sup>${resultExp}</sup>.`;
+    } else if (style==='multDiv') {
+      // (base^a * base^b) / base^c
+      html = `<span class="frac"><span class="num">${base}<sup>${a}</sup> * ${base}<sup>${b}</sup></span><span class="den">${base}<sup>${c}</sup></span></span>`;
+      resultExp = a + b - c;
+      explanation = `Multiply then divide: add exponents for multiplication and subtract for division: ${a}+${b}-${c} = ${resultExp}.`;
+    } else {
+      // base^a / (base^b * base^c)
+      html = `<span class="frac"><span class="num">${base}<sup>${a}</sup></span><span class="den">${base}<sup>${b}</sup> * ${base}<sup>${c}</sup></span></span>`;
+      resultExp = a - b - c;
+      explanation = `In the denominator, add exponents: ${b}+${c}. Then subtract from the exponent in the numerator: ${a}-(${b}+${c})=${resultExp}.`;
+    }
+    return {
+      html,
+      prompt: 'Simplify the expression as a single power.',
+      answerObj: { type:'power', base, exponent: resultExp },
+      displayAnswer: `${base}<sup>${resultExp}</sup>`,
+      explanation,
+      answerType: 'power'
+    };
+  }
+
+  function makeHardCalc_Grundpotens() {
+    const mantissa = randInt(1,9);
+    const exponent = choice([-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6]);
+    const value = valueOfSci(mantissa, exponent);
+    const display = formatDecimal(value);
+    const prompt = 'Write the number in scientific notation (a * 10^n, with 1 ≤ a < 10).';
+    const explanation = `${display} = ${mantissa} * 10<sup>${exponent}</sup>, where the mantissa is between 1 and 10 and we count how the decimal point moves.`;
+    return {
+      html: display,
+      prompt,
+      answerObj: { type:'sci', mantissa, exponent },
+      displayAnswer: `${mantissa} * 10<sup>${exponent}</sup>`,
+      explanation,
+      answerType: 'sci'
+    };
+  }
+
+  // HARD SOLVE
+  function makeHardSolve_OneSide() {
+    const base = choice([2,3,5,7,10]);
+    const a = randInt(-5,5);
+    const b = randInt(-5,5);
+    const style = choice(['mult','div','plusZero']);
+    let html, x, explanation;
+    if (style==='mult') {
+      const c = randInt(-5,5);
+      x = c - a - b;
+      html = `${base}<sup>x</sup> * ${base}<sup>${a}</sup> * ${base}<sup>${b}</sup> = ${base}<sup>${c}</sup>`;
+      explanation = `Combine all powers on the left: add exponents to get ${base}<sup>x+${a}+${b}</sup>. Then x+${a}+${b}=${c}, so x=${c}-${a}-${b}=${x}.`;
+    } else if (style==='div') {
+      const c = randInt(-5,5);
+      html = `<span class="frac"><span class="num">${base}<sup>x</sup> * ${base}<sup>${a}</sup></span><span class="den">${base}<sup>${b}</sup></span></span> = ${base}<sup>${c}</sup>`;
+      x = c - a + b;
+      explanation = `For multiplication add exponents; for division subtract: x+${a}-${b}=${c}, so x=${c}-${a}+${b}=${x}.`;
+    } else {
+      const k = randInt(-5,5);
+      html = `${base}<sup>x</sup> * ${base}<sup>${k}</sup> = 1`;
+      x = -k;
+      explanation = `1 = ${base}<sup>0</sup>. On the left we have ${base}<sup>x+${k}</sup>, so x+${k}=0 and x=-${k}=${x}.`;
+    }
+    return {
+      html,
+      prompt: 'Solve for x.',
+      answerObj: { type:'integer', value: x },
+      displayAnswer: String(x),
+      explanation,
+      answerType: 'integer'
+    };
+  }
+
+  function generateProblem(mode, difficulty) {
+    let diff = difficulty;
+    if (diff === 'random') {
+      diff = choice(['easy','medium','hard']);
+    }
+    let builder;
+    if (mode === 'calculate') {
+      if (diff === 'easy') {
+        builder = choice([makeEasyCalc_RemovePower, makeEasyCalc_ToPowerOfTen, makeEasyCalc_SameBaseMultDiv]);
+      } else if (diff === 'medium') {
+        builder = choice([makeMediumCalc_PosNeg, makeMediumCalc_FractionPowers]);
+      } else {
+        builder = choice([makeHardCalc_Mixed, makeHardCalc_Grundpotens]);
+      }
+    } else {
+      if (diff === 'easy') {
+        builder = makeEasySolve_Simple;
+      } else if (diff === 'medium') {
+        builder = makeMediumSolve_CompareExponents;
+      } else {
+        builder = makeHardSolve_OneSide;
+      }
+    }
+    const p = builder();
+    p.mode = mode;
+    p.difficulty = diff;
+    return p;
+  }
+
+  function checkAnswer(problem, rawAnswer) {
+    const ans = rawAnswer.trim();
+    if (!ans) return { correct:false, message:'Please enter an answer.' };
+
+    if (problem.answerObj.type === 'decimal') {
+      const n = parseDecimal(ans);
+      if (n === null) return { correct:false, message:'Could not read your number.' };
+      if (approxEqual(n, problem.answerObj.value)) {
+        return { correct:true };
+      }
+      return { correct:false };
+    }
+
+    if (problem.answerObj.type === 'integer') {
+      const normalized = normalizeDecimalInput(ans);
+      if (!/^[-+]?\d+$/.test(normalized)) {
+        return { correct:false, message:'Answer should be an integer.' };
+      }
+      const v = parseInt(normalized,10);
+      return { correct: v === problem.answerObj.value };
+    }
+
+    if (problem.answerObj.type === 'power') {
+      const pwr = parsePowerInput(ans);
+      if (!pwr) {
+        return { correct:false, message:'Write answer as base^exponent, e.g. 10^3.' };
+      }
+      return {
+        correct: pwr.base === problem.answerObj.base && pwr.exponent === problem.answerObj.exponent
+      };
+    }
+
+    if (problem.answerObj.type === 'sci') {
+      const sci = parseSciInput(ans);
+      if (!sci) {
+        return { correct:false, message:'Use the form a*10^n, e.g. 3.2*10^4.' };
+      }
+      const a = Math.abs(sci.mantissa);
+      if (!(a >= 1 && a < 10)) {
+        return { correct:false, message:'Mantissa must satisfy 1 ≤ a < 10 for scientific notation.' };
+      }
+      const expected = valueOfSci(problem.answerObj.mantissa, problem.answerObj.exponent);
+      const entered = valueOfSci(sci.mantissa, sci.exponent);
+      if (approxEqual(expected, entered)) {
+        return { correct:true };
+      }
+      return { correct:false };
+    }
+
+    return { correct:false };
+  }
+
+  function stopTimer() {
+    if (timerId) {
+      clearInterval(timerId);
+      timerId = null;
+    }
+  }
+
+  function startTimer() {
+    stopTimer();
+    if (!$('timerToggle').checked) {
+      $('timerDisplay').textContent = '';
+      return;
+    }
+    timeLeft = parseInt($('timerDuration').value,10);
+    $('timerDisplay').textContent = `Time left: ${timeLeft}s`;
+    timerId = setInterval(() => {
+      timeLeft--;
+      if (timeLeft <= 0) {
+        $('timerDisplay').textContent = 'Time is up!';
+        stopTimer();
+      } else {
+        $('timerDisplay').textContent = `Time left: ${timeLeft}s`;
+      }
+    },1000);
+  }
+
+  function newQuestion() {
+    currentProblem = generateProblem(currentMode, currentDifficulty);
+    hasAnsweredCurrent = false;
+    $('problemDisplay').innerHTML = currentProblem.html;
+    $('promptLabel').textContent = currentProblem.prompt;
+    $('feedback').textContent = '';
+    $('feedback').className = 'feedback';
+    $('steps').textContent = '';
+    $('stepsBtn').disabled = true;
+    $('nextBtn').disabled = true;
+    $('answerInput').value = '';
+    $('answerInput').focus();
+    startTimer();
+  }
+
+  function playSound(correct) {
+    if (!$('soundToggle').checked) return;
+    try {
+      const el = correct ? $('soundCorrect') : $('soundWrong');
+      el.currentTime = 0;
+      el.play();
+    } catch (e) {}
+  }
+
+  function submitAnswer() {
+    if (!currentProblem) {
+      newQuestion();
+      return;
+    }
+    const ans = $('answerInput').value;
+    const result = checkAnswer(currentProblem, ans);
+    if (!hasAnsweredCurrent) {
+      stats.total++;
+    }
+    hasAnsweredCurrent = true;
+    let fb = $('feedback');
+    fb.className = 'feedback';
+    if (result.correct) {
+      fb.textContent = 'Correct!';
+      fb.classList.add('correct');
+      if (!currentProblem.countedCorrect) {
+        stats.correct++;
+        stats.streak++;
+        stats.score += 10;
+        if (stats.streak > 0 && stats.streak % 5 === 0) {
+          stats.score += 5;
+        }
+        currentProblem.countedCorrect = true;
+      }
+      $('nextBtn').disabled = false;
+      $('stepsBtn').disabled = false;
+      $('steps').innerHTML = currentProblem.explanation;
+      playSound(true);
+    } else {
+      fb.textContent = result.message || 'Not correct.';
+      fb.classList.add('incorrect');
+      stats.streak = 0;
+      playSound(false);
+      $('nextBtn').disabled = false;
+      $('stepsBtn').disabled = false;
+      $('steps').innerHTML = currentProblem.explanation + `<br><br>Correct answer: ${currentProblem.displayAnswer}`;
+      if (!currentProblem.loggedIncorrect) {
+        incorrectLog.push({
+          question: currentProblem.html.replace(/&nbsp;/g,' '),
+          yourAnswer: ans || '(blank)',
+          correctAnswer: currentProblem.displayAnswer.replace(/&nbsp;/g,' ')
+        });
+        currentProblem.loggedIncorrect = true;
+      }
+    }
+    updateStatsDisplay();
+    renderIncorrectList();
+  }
+
+  let worksheetData = [];
+
+  function generateWorksheet() {
+    const mode = document.querySelector('#wsModeSelect .mode-btn.active').dataset.mode;
+    const diff = document.querySelector('#wsDifficultySelect .difficulty-btn.active').dataset.diff;
+    const count = parseInt(document.querySelector('#wsCountSelect .worksheet-count-btn.active').dataset.count,10);
+
+    worksheetData = [];
+    const itemsContainer = $('worksheetItems');
+    itemsContainer.innerHTML = '';
+    const instruction = mode === 'calculate'
+      ? 'Simplify or rewrite each expression. Show your working.'
+      : 'Solve each equation for x. Show your working.';
+    $('worksheetInstruction').textContent = instruction;
+
+    for (let i=0;i<count;i++) {
+      const prob = generateProblem(mode, diff);
+      worksheetData.push(prob);
+      const div = document.createElement('div');
+      div.className = 'worksheet-item';
+      const qNum = i+1;
+      div.innerHTML = `<div><strong>${qNum}.</strong> ${prob.html}</div>
+        <div style="min-height:16px;"></div>
+        <div class="worksheet-answer">Answer: ${prob.displayAnswer}</div>`;
+      itemsContainer.appendChild(div);
+    }
+
+    $('revealOneBtn').disabled = false;
+    $('revealAllBtn').disabled = false;
+    $('hideAllBtn').disabled = false;
+    hideAllWorksheetAnswers();
+  }
+
+  function revealNextAnswer() {
+    const answers = Array.from(document.querySelectorAll('.worksheet-answer'));
+    for (let ans of answers) {
+      if (ans.style.display === 'none') {
+        ans.style.display = 'block';
+        return;
+      }
+    }
+  }
+
+  function revealAllAnswers() {
+    const answers = document.querySelectorAll('.worksheet-answer');
+    answers.forEach(a=>a.style.display='block');
+  }
+
+  function hideAllWorksheetAnswers() {
+    const answers = document.querySelectorAll('.worksheet-answer');
+    answers.forEach(a=>a.style.display='none');
+  }
+
+  document.querySelectorAll('#modeSelect .mode-btn').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      document.querySelectorAll('#modeSelect .mode-btn').forEach(b=>b.classList.remove('active'));
+      btn.classList.add('active');
+      currentMode = btn.dataset.mode;
+      newQuestion();
+    });
+  });
+
+  document.querySelectorAll('#difficultySelect .difficulty-btn').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      document.querySelectorAll('#difficultySelect .difficulty-btn').forEach(b=>b.classList.remove('active'));
+      btn.classList.add('active');
+      currentDifficulty = btn.dataset.diff;
+      newQuestion();
+    });
+  });
+
+  $('submitBtn').addEventListener('click', submitAnswer);
+  $('nextBtn').addEventListener('click', newQuestion);
+  $('clearBtn').addEventListener('click', ()=>{
+    $('answerInput').value = '';
+    $('answerInput').focus();
+  });
+  $('stepsBtn').addEventListener('click', ()=>{
+    if (currentProblem) {
+      $('steps').innerHTML = currentProblem.explanation + `<br><br>Correct answer: ${currentProblem.displayAnswer}`;
+    }
+  });
+  $('newQuestionBtn').addEventListener('click', newQuestion);
+
+  $('timerToggle').addEventListener('change', ()=>{
+    if ($('timerToggle').checked && currentProblem) {
+      startTimer();
+    } else {
+      stopTimer();
+      $('timerDisplay').textContent = '';
+    }
+  });
+
+  $('timerDuration').addEventListener('change', ()=>{
+    if ($('timerToggle').checked && currentProblem) {
+      startTimer();
+    }
+  });
+
+  $('contrastToggle').addEventListener('change', ()=>{
+    if ($('contrastToggle').checked) {
+      document.body.classList.add('high-contrast');
+    } else {
+      document.body.classList.remove('high-contrast');
+    }
+  });
+
+  document.querySelectorAll('.tab-btn').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+      btn.classList.add('active');
+      const tab = btn.dataset.tab;
+      document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
+      $(tab).classList.add('active');
+    });
+  });
+
+  document.querySelectorAll('#wsModeSelect .mode-btn').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      document.querySelectorAll('#wsModeSelect .mode-btn').forEach(b=>b.classList.remove('active'));
+      btn.classList.add('active');
+    });
+  });
+  document.querySelectorAll('#wsDifficultySelect .difficulty-btn').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      document.querySelectorAll('#wsDifficultySelect .difficulty-btn').forEach(b=>b.classList.remove('active'));
+      btn.classList.add('active');
+    });
+  });
+  document.querySelectorAll('#wsCountSelect .worksheet-count-btn').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      document.querySelectorAll('#wsCountSelect .worksheet-count-btn').forEach(b=>b.classList.remove('active'));
+      btn.classList.add('active');
+    });
+  });
+
+  $('generateWorksheetBtn').addEventListener('click', generateWorksheet);
+  $('revealOneBtn').addEventListener('click', revealNextAnswer);
+  $('revealAllBtn').addEventListener('click', revealAllAnswers);
+  $('hideAllBtn').addEventListener('click', hideAllWorksheetAnswers);
+
+  document.addEventListener('keydown', (e)=>{
+    if (e.key === 'Enter') {
+      if (document.activeElement === $('answerInput') || document.activeElement === document.body) {
+        if ($('nextBtn').disabled) {
+          submitAnswer();
+        } else {
+          newQuestion();
+        }
+        e.preventDefault();
+      }
+    } else if (e.key === 'Escape') {
+      $('answerInput').value = '';
+      e.preventDefault();
+    }
+  });
+
+  function runDevTests() {
+    const tests = [];
+    function addTest(name, fn) {
+      try {
+        const ok = fn();
+        tests.push({ name, ok, error: ok ? null : 'Assertion failed' });
+      } catch (e) {
+        tests.push({ name, ok:false, error: e.message || String(e) });
+      }
+    }
+
+    addTest('parseDecimal simple', ()=> parseDecimal('3,5') === 3.5 && parseDecimal('2.5') === 2.5);
+    addTest('formatDecimal integer spacing', ()=> formatDecimal(1234567) === '1 234 567');
+    addTest('formatDecimal decimal', ()=> formatDecimal(0.001) === '0,001');
+    addTest('sci parse basic', ()=>{
+      const r = parseSciInput('3*10^4');
+      return r && r.mantissa===3 && r.exponent===4;
+    });
+    addTest('sci mantissa rule', ()=>{
+      const prob = makeHardCalc_Grundpotens();
+      const val = `${(prob.answerObj.mantissa*0.1).toString().replace('.',',')}*10^${prob.answerObj.exponent+1}`;
+      const res = checkAnswer(prob, val);
+      return res.correct === false;
+    });
+    addTest('power parse', ()=>{
+      const r = parsePowerInput('10^3');
+      return r && r.base===10 && r.exponent===3;
+    });
+    addTest('easy calc generates', ()=>{
+      const p = generateProblem('calculate','easy');
+      return !!p && !!p.html && !!p.displayAnswer;
+    });
+    addTest('easy solve integer', ()=>{
+      const p = generateProblem('solve','easy');
+      const res = checkAnswer(p, String(p.answerObj.value));
+      return res.correct === true;
+    });
+    addTest('medium calc fraction display', ()=>{
+      const p = makeMediumCalc_FractionPowers();
+      return p.html.includes('class="frac"');
+    });
+    addTest('hard solve integer', ()=>{
+      const p = generateProblem('solve','hard');
+      const res = checkAnswer(p, String(p.answerObj.value));
+      return res.correct === true;
+    });
+
+    const container = $('devPanelContainer');
+    const details = document.createElement('details');
+    details.className = 'dev-panel card';
+    details.open = true;
+    const summary = document.createElement('summary');
+    summary.textContent = `Developer tests (${tests.filter(t=>t.ok).length}/${tests.length} passed)`;
+    details.appendChild(summary);
+    const list = document.createElement('ul');
+    tests.forEach(t=>{
+      const li = document.createElement('li');
+      li.textContent = (t.ok ? '✅ ' : '❌ ') + t.name + (t.ok ? '' : ` – ${t.error}`);
+      list.appendChild(li);
+    });
+    details.appendChild(list);
+    container.appendChild(details);
+  }
+
+  const params = new URLSearchParams(window.location.search);
+  if (params.get('dev') === '1') {
+    runDevTests();
+  }
+
+  updateStatsDisplay();
+})();
+</script>
+</body>
+</html>
